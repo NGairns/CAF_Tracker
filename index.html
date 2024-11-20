@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Dashboard</title>
+    <style>
+        /* General page styles */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #3a3a3a;
+            color: #fff;
+            padding: 15px 20px;
+            text-align: center;
+        }
+
+        h1 {
+            margin: 0;
+        }
+
+        .filters {
+            display: flex;
+            justify-content: space-around;
+            padding: 10px;
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        select {
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        .project-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .project-card {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            width: 280px;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .project-card img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+        }
+
+        .project-card h3 {
+            margin: 15px;
+            font-size: 20px;
+        }
+
+        .project-card p {
+            margin: 0 15px 15px;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .project-card .status {
+            font-size: 16px;
+            font-weight: bold;
+            color: #2d8b36;
+            margin-left: 15px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .modal-content h2 {
+            margin-top: 0;
+        }
+
+        .modal-content p {
+            margin: 10px 0;
+            font-size: 16px;
+        }
+
+        .close-btn {
+            background-color: #e74c3c;
+            color: #fff;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 4px;
+            border: none;
+            margin-top: 20px;
+        }
+
+        .project-card .view-details {
+            background-color: #3498db;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+            border-radius: 0 0 8px 8px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Project Dashboard</h1>
+    </header>
+
+    <!-- Filters Section -->
+    <div class="filters">
+        <select id="serviceFilter">
+            <option value="">Select Service</option>
+            <option value="IT">IT</option>
+            <option value="Construction">Construction</option>
+            <option value="Healthcare">Healthcare</option>
+        </select>
+        <select id="categoryFilter">
+            <option value="">Select Category</option>
+            <option value="Infrastructure">Infrastructure</option>
+            <option value="Research">Research</option>
+            <option value="Development">Development</option>
+        </select>
+    </div>
+
+    <!-- Project Cards Section -->
+    <div class="project-container" id="projectContainer">
+        <!-- Project cards will be dynamically loaded here -->
+    </div>
+
+    <!-- Modal for project details -->
+    <div class="modal" id="projectModal">
+        <div class="modal-content">
+            <h2 id="modalProjectName"></h2>
+            <p><strong>Service:</strong> <span id="modalService"></span></p>
+            <p><strong>Category:</strong> <span id="modalCategory"></span></p>
+            <p><strong>Status:</strong> <span id="modalStatus"></span></p>
+            <p><strong>Closing Date:</strong> <span id="modalClosingDate"></span></p>
+            <p><strong>Contract Date:</strong> <span id="modalContractDate"></span></p>
+            <p><strong>IOC:</strong> <span id="modalIOC"></span></p>
+            <p><strong>FOC:</strong> <span id="modalFOC"></span></p>
+            <p><strong>Age:</strong> <span id="modalAge"></span></p>
+            <p><strong>Cost:</strong> <span id="modalCost"></span></p>
+            <p><strong>Notes:</strong> <span id="modalNotes"></span></p>
+            <button class="close-btn" onclick="closeModal()">Close</button>
+        </div>
+    </div>
+
+    <script>
+        // Example project data
+        const projects = [
+            {
+                name: "Project Alpha",
+                service: "IT",
+                category: "Infrastructure",
+                status: "In Progress",
+                closingDate: "2025-01-01",
+                contractDate: "2023-06-01",
+                IOC: "2024-03-15",
+                FOC: "2025-01-15",
+                age: "6 months",
+                cost: "$500,000",
+                notes: "High priority project",
+                imageUrl: "https://via.placeholder.com/280x150",
+            },
+            {
+                name: "Project Beta",
+                service: "Construction",
+                category: "Development",
+                status: "Completed",
+                closingDate: "2023-10-01",
+                contractDate: "2022-05-15",
+                IOC: "2023-05-20",
+                FOC: "2023-09-10",
+                age: "1 year",
+                cost: "$1,000,000",
+                notes: "Successfully completed",
+                imageUrl: "https://via.placeholder.com/280x150",
+            },
+            {
+                name: "Project Gamma",
+                service: "Healthcare",
+                category: "Research",
+                status: "On Hold",
+                closingDate: "2024-12-31",
+                contractDate: "2023-11-01",
+                IOC: "2024-06-30",
+                FOC: "2025-01-15",
+                age: "2 months",
+                cost: "$750,000",
+                notes: "Pending approval",
+                imageUrl: "https://via.placeholder.com/280x150",
+            }
+        ];
+
+        const projectContainer = document.getElementById("projectContainer");
+        const projectModal = document.getElementById("projectModal");
+        const serviceFilter = document.getElementById("serviceFilter");
+        const categoryFilter = document.getElementById("categoryFilter");
+
+        // Function to render the project cards
+        function renderProjects(filteredProjects) {
+            projectContainer.innerHTML = "";
+            filteredProjects.forEach(project => {
+                const card = document.createElement("div");
+                card.classList.add("project-card");
+                card.innerHTML = `
+                    <img src="${project.imageUrl}" alt="${project.name}">
+                    <h3>${project.name}</h3>
+                    <p>${project.notes}</p>
+                    <p class="status">${project.status}</p>
+                    <div class="view-details" onclick="openModal(${JSON.stringify(project)})">View Details</div>
+                `;
+                projectContainer.appendChild(card);
+            });
+        }
+
+        // Open modal with project details
+        function openModal(project) {
+            document.getElementById('modalProjectName').textContent = project.name;
+            document.getElementById('modalService').textContent = project.service;
+            document.getElementById('modalCategory').textContent = project.category;
+            document.getElementById('modalStatus').textContent = project.status;
+            document.getElementById('modalClosingDate').textContent = project.closingDate;
+            document.getElementById('modalContractDate').textContent = project.contractDate;
+            document.getElementById('modalIOC').textContent = project.IOC;
+            document.getElementById('modalFOC').textContent = project.FOC;
+            document.getElementById('modalAge').textContent = project.age;
+            document.getElementById('modalCost').textContent = project.cost;
+            document.getElementById('modalNotes').textContent = project.notes;
+            projectModal.style.display = 'flex';
+        }
+
+        // Close modal
+        function closeModal() {
+            projectModal.style.display = 'none';
+        }
+
+        // Filter function
+        function filterProjects() {
+            const serviceValue = serviceFilter.value;
+            const categoryValue = categoryFilter.value;
+
+            const filteredProjects = projects.filter(project => {
+                const matchesService = serviceValue ? project.service === serviceValue : true;
+                const matchesCategory = categoryValue ? project.category === categoryValue : true;
+                return matchesService && matchesCategory;
+            });
+
+            renderProjects(filteredProjects);
+        }
+
+        // Event listeners for filters
+        serviceFilter.addEventListener("change", filterProjects);
+        categoryFilter.addEventListener("change", filterProjects);
+
+        // Initial render
+        renderProjects(projects);
+    </script>
+
+</body>
+</html>
