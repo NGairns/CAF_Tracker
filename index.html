@@ -3,81 +3,86 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Project Dashboard</title>
+    <title>Project Tracker</title>
     <style>
-        /* General page styles */
+        /* General Body Styles */
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
+            background-color: #111;
+            color: white;
             margin: 0;
             padding: 0;
         }
 
+        /* Header */
         header {
-            background-color: #3a3a3a;
-            color: #fff;
-            padding: 15px 20px;
+            background-color: #1c1c1c;
+            padding: 20px;
             text-align: center;
+            font-size: 2em;
+            color: #ff4d4d;
+            text-transform: uppercase;
+            letter-spacing: 2px;
         }
 
-        h1 {
-            margin: 0;
-        }
-
+        /* Filter Section */
         .filters {
+            margin: 20px;
             display: flex;
-            justify-content: space-around;
-            padding: 10px;
-            background-color: #fff;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            justify-content: space-between;
+            color: #ff4d4d;
         }
-
+        
         select {
             padding: 10px;
-            font-size: 16px;
+            background-color: #333;
+            border: none;
+            color: white;
+            font-size: 1em;
+            border-radius: 5px;
         }
 
-        .project-container {
-            display: flex;
-            flex-wrap: wrap;
+        /* Project Cards Container */
+        .project-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
             gap: 20px;
-            justify-content: center;
+            margin: 20px;
+            padding: 10px;
+        }
+
+        .card {
+            background-color: #222;
             padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+            transition: transform 0.3s;
         }
 
-        .project-card {
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            width: 280px;
-            overflow: hidden;
-            cursor: pointer;
+        .card:hover {
+            transform: scale(1.05);
         }
 
-        .project-card img {
+        .card img {
             width: 100%;
-            height: 150px;
-            object-fit: cover;
+            border-radius: 10px;
         }
 
-        .project-card h3 {
-            margin: 15px;
-            font-size: 20px;
+        .card h3 {
+            margin: 10px 0;
+            color: #ff4d4d;
         }
 
-        .project-card p {
-            margin: 0 15px 15px;
-            font-size: 14px;
-            color: #555;
+        .card p {
+            font-size: 1em;
+            color: #bbb;
         }
 
-        .project-card .status {
-            font-size: 16px;
-            font-weight: bold;
-            color: #2d8b36;
-            margin-left: 15px;
+        .status {
+            color: #00ff00;
         }
 
+        /* Modal Styling */
         .modal {
             display: none;
             position: fixed;
@@ -85,204 +90,227 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.8);
             justify-content: center;
             align-items: center;
+            padding: 50px;
         }
 
         .modal-content {
-            background-color: #fff;
-            border-radius: 8px;
+            background-color: #222;
+            color: white;
             padding: 20px;
-            max-width: 600px;
-            width: 100%;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 900px;
+            overflow-y: auto;
         }
 
         .modal-content h2 {
-            margin-top: 0;
+            color: #ff4d4d;
         }
 
         .modal-content p {
-            margin: 10px 0;
-            font-size: 16px;
+            color: #ccc;
         }
 
         .close-btn {
-            background-color: #e74c3c;
-            color: #fff;
-            padding: 10px;
-            cursor: pointer;
-            border-radius: 4px;
+            background-color: #ff4d4d;
+            color: white;
             border: none;
+            padding: 10px;
+            font-size: 1em;
+            cursor: pointer;
+            border-radius: 5px;
             margin-top: 20px;
         }
 
-        .project-card .view-details {
-            background-color: #3498db;
-            color: #fff;
-            padding: 10px;
-            text-align: center;
-            border-radius: 0 0 8px 8px;
-            cursor: pointer;
+        .close-btn:hover {
+            background-color: #e60000;
         }
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>Project Dashboard</h1>
-    </header>
+<header>
+    Project Tracker
+</header>
 
-    <!-- Filters Section -->
-    <div class="filters">
-        <select id="serviceFilter">
-            <option value="">Select Service</option>
-            <option value="IT">IT</option>
-            <option value="Construction">Construction</option>
-            <option value="Healthcare">Healthcare</option>
-        </select>
-        <select id="categoryFilter">
-            <option value="">Select Category</option>
-            <option value="Infrastructure">Infrastructure</option>
-            <option value="Research">Research</option>
-            <option value="Development">Development</option>
-        </select>
+<div class="filters">
+    <select id="serviceFilter">
+        <option value="">Filter by Service</option>
+        <option value="RCAF">RCAF</option>
+        <option value="CA">CA</option>
+        <option value="RCN">RCN</option>
+        <option value="CCG">CCG</option>
+        <option value="OTHER">Other</option>
+    </select>
+
+    <select id="categoryFilter">
+        <option value="">Filter by Category</option>
+        <option value="Personal Equipment">Personal Equipment</option>
+        <option value="Infrastructure">Infrastructure</option>
+        <option value="Vehicles">Vehicles</option>
+        <option value="Vehicles - Wheeled">Vehicles - Wheeled</option>
+        <option value="Vehicles - Tracked">Vehicles - Tracked</option>
+        <option value="Aircraft">Aircraft</option>
+        <option value="Aircraft - Fixed-Wing">Aircraft - Fixed-Wing</option>
+        <option value="Aircraft - Rotary">Aircraft - Rotary</option>
+        <option value="Aircraft - UAS">Aircraft - UAS</option>
+        <option value="Ships">Ships</option>
+        <option value="Ships - Combatants">Ships - Combatants</option>
+        <option value="Ships - Auxiliary">Ships - Auxiliary</option>
+        <option value="Ships - Submarines">Ships - Submarines</option>
+        <option value="Technology">Technology</option>
+        <option value="Digital">Digital</option>
+        <option value="Space">Space</option>
+        <option value="Missiles">Missiles</option>
+        <option value="Air-Defence">Air-Defence</option>
+        <option value="Upgrades">Upgrades</option>
+        <option value="Artillery">Artillery</option>
+        <option value="NORAD">NORAD</option>
+        <option value="Other">Other</option>
+    </select>
+</div>
+
+<div class="project-cards" id="projectCards">
+    <!-- Dynamic Project Cards will be inserted here -->
+</div>
+
+<!-- Modal for expanded project details -->
+<div class="modal" id="projectModal">
+    <div class="modal-content">
+        <h2 id="modalTitle"></h2>
+        <p id="modalService"></p>
+        <p id="modalCategory"></p>
+        <p id="modalStatus"></p>
+        <p id="modalClosingDate"></p>
+        <p id="modalContractDate"></p>
+        <p id="modalIOC"></p>
+        <p id="modalFOC"></p>
+        <p id="modalAge"></p>
+        <p id="modalCost"></p>
+        <button class="close-btn" onclick="closeModal()">Close</button>
     </div>
+</div>
 
-    <!-- Project Cards Section -->
-    <div class="project-container" id="projectContainer">
-        <!-- Project cards will be dynamically loaded here -->
-    </div>
-
-    <!-- Modal for project details -->
-    <div class="modal" id="projectModal">
-        <div class="modal-content">
-            <h2 id="modalProjectName"></h2>
-            <p><strong>Service:</strong> <span id="modalService"></span></p>
-            <p><strong>Category:</strong> <span id="modalCategory"></span></p>
-            <p><strong>Status:</strong> <span id="modalStatus"></span></p>
-            <p><strong>Closing Date:</strong> <span id="modalClosingDate"></span></p>
-            <p><strong>Contract Date:</strong> <span id="modalContractDate"></span></p>
-            <p><strong>IOC:</strong> <span id="modalIOC"></span></p>
-            <p><strong>FOC:</strong> <span id="modalFOC"></span></p>
-            <p><strong>Age:</strong> <span id="modalAge"></span></p>
-            <p><strong>Cost:</strong> <span id="modalCost"></span></p>
-            <p><strong>Notes:</strong> <span id="modalNotes"></span></p>
-            <button class="close-btn" onclick="closeModal()">Close</button>
-        </div>
-    </div>
-
-    <script>
-        // Example project data
-        const projects = [
-            {
-                name: "Project Alpha",
-                service: "IT",
-                category: "Infrastructure",
-                status: "In Progress",
-                closingDate: "2025-01-01",
-                contractDate: "2023-06-01",
-                IOC: "2024-03-15",
-                FOC: "2025-01-15",
-                age: "6 months",
-                cost: "$500,000",
-                notes: "High priority project",
-                imageUrl: "https://via.placeholder.com/280x150",
-            },
-            {
-                name: "Project Beta",
-                service: "Construction",
-                category: "Development",
-                status: "Completed",
-                closingDate: "2023-10-01",
-                contractDate: "2022-05-15",
-                IOC: "2023-05-20",
-                FOC: "2023-09-10",
-                age: "1 year",
-                cost: "$1,000,000",
-                notes: "Successfully completed",
-                imageUrl: "https://via.placeholder.com/280x150",
-            },
-            {
-                name: "Project Gamma",
-                service: "Healthcare",
-                category: "Research",
-                status: "On Hold",
-                closingDate: "2024-12-31",
-                contractDate: "2023-11-01",
-                IOC: "2024-06-30",
-                FOC: "2025-01-15",
-                age: "2 months",
-                cost: "$750,000",
-                notes: "Pending approval",
-                imageUrl: "https://via.placeholder.com/280x150",
-            }
-        ];
-
-        const projectContainer = document.getElementById("projectContainer");
-        const projectModal = document.getElementById("projectModal");
-        const serviceFilter = document.getElementById("serviceFilter");
-        const categoryFilter = document.getElementById("categoryFilter");
-
-        // Function to render the project cards
-        function renderProjects(filteredProjects) {
-            projectContainer.innerHTML = "";
-            filteredProjects.forEach(project => {
-                const card = document.createElement("div");
-                card.classList.add("project-card");
-                card.innerHTML = `
-                    <img src="${project.imageUrl}" alt="${project.name}">
-                    <h3>${project.name}</h3>
-                    <p>${project.notes}</p>
-                    <p class="status">${project.status}</p>
-                    <div class="view-details" onclick="openModal(${JSON.stringify(project)})">View Details</div>
-                `;
-                projectContainer.appendChild(card);
-            });
+<script>
+    const projects = [
+        {
+            name: "Project A",
+            service: "RCAF",
+            category: "Aircraft - Fixed-Wing",
+            status: "Ongoing",
+            closingDate: "2024-12-01",
+            contractDate: "2023-06-15",
+            IOC: "2025-06-01",
+            FOC: "2027-12-01",
+            age: "1 Year",
+            cost: "$50 Million",
+            image: "https://via.placeholder.com/400x300",
+            description: "This is a description of Project A."
+        },
+        {
+            name: "Project B",
+            service: "RCN",
+            category: "Ships - Combatants",
+            status: "Completed",
+            closingDate: "2023-08-15",
+            contractDate: "2022-01-10",
+            IOC: "2024-01-15",
+            FOC: "2026-07-20",
+            age: "2 Years",
+            cost: "$100 Million",
+            image: "https://via.placeholder.com/400x300",
+            description: "This is a description of Project B."
+        },
+        {
+            name: "Project C",
+            service: "CA",
+            category: "Vehicles - Wheeled",
+            status: "Delayed",
+            closingDate: "2024-05-10",
+            contractDate: "2021-03-22",
+            IOC: "2024-09-15",
+            FOC: "2027-06-30",
+            age: "3 Years",
+            cost: "$75 Million",
+            image: "https://via.placeholder.com/400x300",
+            description: "This is a description of Project C."
         }
+    ];
 
-        // Open modal with project details
-        function openModal(project) {
-            document.getElementById('modalProjectName').textContent = project.name;
-            document.getElementById('modalService').textContent = project.service;
-            document.getElementById('modalCategory').textContent = project.category;
-            document.getElementById('modalStatus').textContent = project.status;
-            document.getElementById('modalClosingDate').textContent = project.closingDate;
-            document.getElementById('modalContractDate').textContent = project.contractDate;
-            document.getElementById('modalIOC').textContent = project.IOC;
-            document.getElementById('modalFOC').textContent = project.FOC;
-            document.getElementById('modalAge').textContent = project.age;
-            document.getElementById('modalCost').textContent = project.cost;
-            document.getElementById('modalNotes').textContent = project.notes;
-            projectModal.style.display = 'flex';
-        }
+    const projectCardsContainer = document.getElementById('projectCards');
+    const serviceFilter = document.getElementById('serviceFilter');
+    const categoryFilter = document.getElementById('categoryFilter');
+    const projectModal = document.getElementById('projectModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalService = document.getElementById('modalService');
+    const modalCategory = document.getElementById('modalCategory');
+    const modalStatus = document.getElementById('modalStatus');
+    const modalClosingDate = document.getElementById('modalClosingDate');
+    const modalContractDate = document.getElementById('modalContractDate');
+    const modalIOC = document.getElementById('modalIOC');
+    const modalFOC = document.getElementById('modalFOC');
+    const modalAge = document.getElementById('modalAge');
+    const modalCost = document.getElementById('modalCost');
 
-        // Close modal
-        function closeModal() {
-            projectModal.style.display = 'none';
-        }
+    // Function to display projects
+    function displayProjects() {
+        const serviceValue = serviceFilter.value;
+        const categoryValue = categoryFilter.value;
 
-        // Filter function
-        function filterProjects() {
-            const serviceValue = serviceFilter.value;
-            const categoryValue = categoryFilter.value;
+        projectCardsContainer.innerHTML = '';
 
-            const filteredProjects = projects.filter(project => {
-                const matchesService = serviceValue ? project.service === serviceValue : true;
-                const matchesCategory = categoryValue ? project.category === categoryValue : true;
-                return matchesService && matchesCategory;
-            });
+        const filteredProjects = projects.filter(project => {
+            const serviceMatch = serviceValue ? project.service === serviceValue : true;
+            const categoryMatch = categoryValue ? project.category === categoryValue : true;
+            return serviceMatch && categoryMatch;
+        });
 
-            renderProjects(filteredProjects);
-        }
+        filteredProjects.forEach(project => {
+            const card = document.createElement('div');
+            card.classList.add('card');
+            card.innerHTML = `
+                <img src="${project.image}" alt="${project.name}">
+                <h3>${project.name}</h3>
+                <p>${project.description}</p>
+                <p class="status">${project.status}</p>
+                <button onclick="openModal(${projects.indexOf(project)})">More Info</button>
+            `;
+            projectCardsContainer.appendChild(card);
+        });
+    }
 
-        // Event listeners for filters
-        serviceFilter.addEventListener("change", filterProjects);
-        categoryFilter.addEventListener("change", filterProjects);
+    // Function to open modal
+    function openModal(index) {
+        const project = projects[index];
+        modalTitle.textContent = project.name;
+        modalService.textContent = `Service: ${project.service}`;
+        modalCategory.textContent = `Category: ${project.category}`;
+        modalStatus.textContent = `Status: ${project.status}`;
+        modalClosingDate.textContent = `Closing Date: ${project.closingDate}`;
+        modalContractDate.textContent = `Contract Date: ${project.contractDate}`;
+        modalIOC.textContent = `IOC: ${project.IOC}`;
+        modalFOC.textContent = `FOC: ${project.FOC}`;
+        modalAge.textContent = `Age: ${project.age}`;
+        modalCost.textContent = `Cost: ${project.cost}`;
+        projectModal.style.display = 'flex';
+    }
 
-        // Initial render
-        renderProjects(projects);
-    </script>
+    // Function to close modal
+    function closeModal() {
+        projectModal.style.display = 'none';
+    }
 
+    // Initial call to display all projects
+    displayProjects();
+
+    // Event listeners for filters
+    serviceFilter.addEventListener('change', displayProjects);
+    categoryFilter.addEventListener('change', displayProjects);
+</script>
 </body>
+</html>
+
 </html>
